@@ -332,7 +332,9 @@ Nem toda API ou modelo oferece os mesmos parâmetros. Aqui, vamos entender o que
 
 Retomando o que vimos nos fundamentos: depois de processar o contexto e prompt, o modelo atribui uma pontuação (*logit*) para cada possível próximo token. Essas pontuações são convertidas em probabilidades com uma função **Softmax**:
 
-$$P(x_i) = \frac{e^{z_i / T}}{\sum_j e^{z_j / T}}$$
+$$
+P(x_i) = \frac{e^{z_i / T}}{\sum_j e^{z_j / T}}
+$$
 
 Onde $z_i$ é o logit do token $i$, e $T$ é a **temperatura**:
 

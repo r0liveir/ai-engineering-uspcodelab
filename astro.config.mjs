@@ -1,12 +1,22 @@
 import { defineConfig } from 'astro/config';
+import { unified } from '@astrojs/markdown-remark';
 import starlight from '@astrojs/starlight';
+import rehypeKatex from 'rehype-katex';
+import remarkMath from 'remark-math';
 
 export default defineConfig({
   site: 'https://r0liveir.github.io',
   base: '/ai-engineering-uspcodelab',
+  markdown: {
+    processor: unified({
+      remarkPlugins: [remarkMath],
+      rehypePlugins: [rehypeKatex],
+    }),
+  },
   integrations: [
     starlight({
       title: 'Applied AI Engineering',
+      customCss: ['./src/styles/katex.css'],
       locales: {
         root: { label: 'Português', lang: 'pt-BR' },
       },
