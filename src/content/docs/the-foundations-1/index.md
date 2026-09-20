@@ -9,7 +9,7 @@ title: "Introdução à Applied AI Engineering — First Contact, II"
 - [Groq OpenAI Compatibility Guide](https://console.groq.com/docs/openai)
 - [Reqhiem - Comparing agent frameworks](https://reqhiem.dev/blog/pydanticai-vs-langchain-vs-llamaindex-agent-frameworks)
 
-# ◕ ◡ ◕
+## ◕ ◡ ◕
 
 Na primeira parte deste módulo, vimos como modelos de linguagem recebem tokens e
 produzem continuações de forma probabilística. Agora vamos colocar esse
@@ -25,7 +25,7 @@ contato com uma aplicação de IA. Ao final, teremos praticado quatro ideias:
 
 ---
 
-## O que estamos construindo de fato?
+### O que estamos construindo de fato?
 
 Imagine uma equipe de administração que recebe diversos e-mails ao longo do dia, com pedidos como:
 
@@ -43,7 +43,7 @@ Por se tratar de um modelo probabilístico, precisamos que este possa interpreta
 
 ---
 
-## Escopo e Arquitetura
+### Escopo e Arquitetura
 
 O sistema gerencia duas entidades relacionais:
 * **Responsável (`Coordinator`):** possui `id` e `name`.
@@ -58,7 +58,7 @@ O software aceitará um conjunto restrito de operações:
 
 Operações mais destrutivas/poderosas como remoção de tarefas ou alteração manual de IDs não farão parte do contrato.
 
-### Arquitetura
+#### Arquitetura
 
 Podemos desenhar a arquitetura como a seguir: (TODO: melhorar isso)
 
@@ -84,7 +84,7 @@ o código determinístico que consulta o banco e descobre que a tarefa 999 não
 existe. Logo, a ação será recusada.
 
 
-## A Camada de Integração
+### A Camada de Integração
 
 LangChain, LangGraph, LlamaIndex, LiteLLM, PydanticAI, Vercel AI SDK, OpenAI
 SDK, Genkit... são muitas opções, com níveis de abstração e objetivos
@@ -97,7 +97,7 @@ No ecossistema atual de AI Engineering, você encontrará ferramentas em diferen
 
 Neste módulo, construiremos o projeto utilizando o **OpenAI SDK**. Em módulos posteriores, quando precisarmos resolver agentes, loops e etc, exploraremos PydanticAI. Também daremos uma visão geral sobre alguns frameworks hypados.
 
-### Groq
+#### Groq
 
 **Groq** é uma empresa de infraestrutura e hardware customizado, com o objetivo de servir inferência de IA de forma rápida. Sem entrar em muitos detalhes, eles utilizam chips e hardwares customizados para rodar inferência de IA (como o LPU, LPX, etc), substituindo hardwares gerais como GPUs.
 
@@ -129,7 +129,7 @@ Python](https://github.com/openai/openai-python) e a lista de diferenças na
 
 
 
-### Primeira Chamada: Hello Model
+#### Primeira Chamada: Hello Model
 
 Antes de mais nada, crie sua chave no Groq e exporte a variável. Para este projeto, utilizaremos o modelo `openai/gpt-oss-120b`.
 
@@ -156,7 +156,7 @@ Nesta chamada, o método `responses.create` retorna uma string não estruturada.
 
 ---
 
-# Iniciando o projeto
+## Iniciando o projeto
 
 Nestas seções, iremos dar início ao projeto de fato. A próxima seção é opcional para quem quiser realizar o setup e a criação de arquivos de forma direta.
 
@@ -164,7 +164,7 @@ Considerando que nosso foco é em saber como integrar um projeto/app com modelos
 
 O código fonte para o esqueleto do projeto está [neste repo do GitHub](https://github.com/r0liveir/CLMail/tree/main/starter) caso não queira iniciar do zero.
 
-## (Opcional) setup
+### (Opcional) setup
 
 Utilizaremos `uv` para gerenciamento do projeto, dependências, etc. Confira [as docs](https://docs.astral.sh/uv/) para instruções de instalação.
 
@@ -180,7 +180,7 @@ uv add openai pydantic sqlalchemy
 
 Feito isso, você já terá um setup inicial :)
 
-## A Base da Aplicação
+### A Base da Aplicação
 
 A organização dos arquivos será a seguinte:
 
@@ -203,7 +203,7 @@ clmail/starter/
 
 Vamos examinar os arquivos de apoio completos antes de nos concentrarmos no `main.py`.
 
-### 1. Tabelas e entidades `src/clmail/models.py`
+#### 1. Tabelas e entidades `src/clmail/models.py`
 
 Definimos as tabelas do SQLite usando a API declarativa moderna do SQLAlchemy 2.0:
 
@@ -247,7 +247,7 @@ class Task(Base):
 
 ---
 
-### 2. Demo Database: `src/clmail/database.py`
+#### 2. Demo Database: `src/clmail/database.py`
 
 Utilizaremos *SQLite* em memória (`sqlite://`), evitando acumular arquivos.
 
@@ -293,7 +293,7 @@ Note que:
 
 ---
 
-### 3. Repository Layer `src/clmail/repository.py`
+#### 3. Repository Layer `src/clmail/repository.py`
 
 Adotamos o **Repository Pattern** para desacoplar consultas de banco das regras de negócio:
 
@@ -317,7 +317,7 @@ class TaskRepository:
 
 ---
 
-### 4. Service Layer: `src/clmail/service.py`
+#### 4. Service Layer: `src/clmail/service.py`
 
 O `TaskService` contém a lógica determinística da aplicação. É ele quem valida se a ação proposta é consistente com o estado real do banco:
 
@@ -358,11 +358,11 @@ Observe que `add_task` não confia no modelo: mesmo que a IA tenha extraído `co
 
 ---
 
-## Construindo a Integração de IA (`src/clmail/main.py`)
+### Construindo a Integração de IA (`src/clmail/main.py`)
 
 Agora chegamos ao núcleo: implementar o arquivo `src/clmail/main.py` para ler um e-mail, enviar à LLM, extrair uma ação estruturada e despachá-la para o `TaskService`.
 
-### 1. Definindo o System Prompt
+#### 1. Definindo o System Prompt
 
 O prompt de sistema orienta o modelo sobre o seu papel, as operações válidas e como lidar com ambiguidade. Provavelmente você já viu algo parecido se ouvir falar de Prompt Engineering:
 
@@ -385,7 +385,7 @@ Instruções como `Never invent IDs` ajudam a calibrar o comportamento da LLM, m
 
 ---
 
-### 2. Structured Output
+#### 2. Structured Output
 
 Para que o código Python confie na resposta do modelo, definimos um schema Pydantic:
 
@@ -424,7 +424,7 @@ class TaskAction(BaseModel):
 
 ---
 
-### 3. Fazendo a chamada ao modelo
+#### 3. Fazendo a chamada ao modelo
 
 Configuramos o cliente da OpenAI apontando para o endpoint da Groq:
 
@@ -457,7 +457,7 @@ O método `responses.parse` cuida de injetar o JSON Schema na requisição, cham
 
 ---
 
-### 4. Roteando para as regras de negócio
+#### 4. Roteando para as regras de negócio
 
 Com `action` validado em mãos, abrimos a sessão do banco e executamos um `match/case` direto contra `action.operation`:
 
@@ -489,7 +489,7 @@ Observe a beleza dessa separação:
 
 ---
 
-### 5. O Arquivo Completo: `src/clmail/main.py`
+#### 5. O Arquivo Completo: `src/clmail/main.py`
 
 Juntando todas as partes, veja como fica o arquivo completo:
 
@@ -583,7 +583,7 @@ if __name__ == "__main__":
 
 ---
 
-## Testando a Primeira Operação (`add_task`)
+### Testando a Primeira Operação (`add_task`)
 
 No starter, temos o arquivo `src/texts/add_task.txt`:
 
@@ -649,7 +649,7 @@ O modelo interpretará a intenção como `operation='no_action'`, o `match/case`
 
 ---
 
-## Adicionando a Segunda Operação (`change_status`)
+### Adicionando a Segunda Operação (`change_status`)
 
 Vamos agora habilitar a alteração de status de uma tarefa existente. Considere o arquivo `src/texts/change_status.txt`:
 
@@ -699,7 +699,7 @@ Temos o fluxo completo:
 
 ---
 
-## Conclusões
+### Conclusões
 
 Parabéns! Você construiu seu primeiro app com um pouco de AI Engineering.
 
@@ -723,7 +723,7 @@ vários e-mails. Elas formam os próximos passos do projeto.
 
 ---
 
-## Exercícios
+### Exercícios
 
 1. **Implemente `change_coordinator` e `register_hours`:** Adicione os métodos correspondentes em `src/clmail/service.py`. Permita que o modelo extraia essas intenções e garanta que o serviço recuse horas negativas ou coordenadores inexistentes.
 2. **Tratamento de feedback amigável na CLI:** Hoje os métodos retornam apenas `bool`. Modifique o serviço para retornar mensagens explicativas (ex: *"Erro: coordenador com ID 99 não cadastrado"* ou *"Nenhuma ação necessária identificada no e-mail"*).

@@ -2,11 +2,16 @@
 title: "Introdução à Applied AI Engineering — First Contact, I"
 ---
 
-# \o/
+## Referências
 
-Olá! Bem-vindo ao curso de AI Engineering do CodsLab.
+- [AI Engineering, Chip Huyen](https://www.amazon.com.br/AI-Engineering-Building-Applications-Foundation/dp/1098166302)
+- [AI Engineering From Scratch](https://aiengineeringfromscratch.com)
 
-## O que é este curso?
+## \o/
+
+Olá! Bem-vindo ao curso de AI Engineering do CodeLab.
+
+### O que é este curso?
 
 Imagine alguns problemas:
 
@@ -24,7 +29,7 @@ Nosso objetivo será dar uma visão inicial sobre a área de **AI Engineering**,
 
 A construção da primeira aplicação começa na próxima aula. Por enquanto, vamos entender as decisões que darão sentido ao código :)
 
-# O que é AI Engineering?
+## O que é AI Engineering?
 
 Sendo uma área recente, existem várias definições para o termo. Um texto do MIT Professional Education oferece uma definição ampla:
 
@@ -36,7 +41,7 @@ Essa descrição inclui sistemas inteligentes de vários tipos. Para delimitar o
 
 Continuamos com as preocupações usuais de engenharia de software, mas passamos também a integrar APIs de modelos, implementar sistemas de RAG, construir avaliações e desenvolver agentes, entre outras coisas.
 
-## Relações com outras áreas
+### Relações com outras áreas
 
 Você pode pensar: “Qual a diferença entre AI Engineering e ML Engineering?”
 
@@ -51,7 +56,7 @@ Por último, uma dúvida que pode aparecer: “Então, aprenderei a vibecodar?�
 Um site pode ter sido escrito com ajuda de IA e funcionar sem chamar qualquer modelo. O CLMail pode ser escrito manualmente e usar um modelo para interpretar e-mails. Usar modelos ou agentes para escrever software não será nosso foco aqui, embora possamos mencionar essas ferramentas quando elas ajudarem no desenvolvimento.
 
 
-# Exemplos de aplicações
+## Exemplos de aplicações
 
 Os casos abaixo são exemplos de projetos possíveis e mostram problemas diferentes.
 
@@ -114,7 +119,7 @@ Aqui, os resultados intermediários ajudam a determinar a próxima consulta. Cha
 
 Nesse projeto, permitiríamos consultas, com limites de tempo e de etapas. Reiniciar serviços ou desfazer deploys exigiria outra decisão de produto e permissões específicas. A capacidade de sugerir uma ação não dá ao modelo autorização para executá-la.
 
-## Outras possibilidades
+### Outras possibilidades
 
 Os três casos anteriores antecipam temas centrais do curso, mas aplicações com IA não se limitam a sistemas administrativos ou texto. Considere outros problemas:
 
@@ -133,7 +138,7 @@ Até aqui falamos em “modelo” de maneira ampla. Isso é importante: AI Engin
 | **Decisão estruturada** | estado → escolha, score ou probabilidade | rotear atendimento, priorizar incidentes, analisar risco |
 | **Ação** | observação + objetivo → comandos | NPCs, robótica e controle de ambientes |
 
-# Ownership como mentalidade
+## Ownership como mentalidade
 
 Em todos esses exemplos, alguém precisa responder pelo comportamento final do sistema. Essa é a mentalidade de **ownership** que queremos desenvolver.
 
@@ -148,11 +153,11 @@ Para cada recurso, voltaremos a três perguntas:
 3. **Que evidência mostrará que a solução funciona?**
 
 
-# Um pouco de teoria
+## Um pouco de teoria
 
 Até aqui, tratamos o modelo como um componente capaz de receber informação e produzir uma resposta. Vamos abrir um pouco essa caixa, mantendo os exemplos anteriores em mente.
 
-## Modelos, LLMs e foundation models
+### Modelos, LLMs e foundation models
 
 De forma geral, um modelo de IA é um programa treinado em um conjunto de dados e que é capaz de reconhecer padrões, com o objetivo de tomar decisões ou fazer previsões. Aqui, nos preocuparemos com a etapa de **inferência**, em que utilizamos o modelo já treinado para processar uma entrada e produzir um resultado.
 
@@ -166,7 +171,7 @@ Alguns modelos de linguagem modernos também recebem imagens, áudio ou vídeo. 
 
 No curso, partimos de modelos já treinados e investigamos como usá-los dentro de aplicações. Não vamos precisar treinar um modelo do zero para interpretar nossos e-mails.
 
-## Tokens e geração de texto
+### Tokens e geração de texto
 
 Utilizando um modelo de linguagem, podemos ter a frase:
 
@@ -191,7 +196,7 @@ Essas unidades são chamadas de **tokens**. Um token pode corresponder a uma pal
 Se você já utilizou APIs de modelo, verá que os custos são, em geral, baseados nessa unidade. Atualmente, é comum utilizar tokens de **subpalavras**: um vocabulário limitado pode combinar suas unidades para representar palavras conhecidas ou novas.
 
 
-## Uma intuição de embeddings e attention
+### Uma intuição de embeddings e attention
 
 Até agora, vimos que o tokenizer transforma texto em uma sequência de tokens. Para o modelo trabalhar com essa sequência, cada token é primeiro associado a um número inteiro, chamado de **token ID**.
 
@@ -330,7 +335,7 @@ O token escolhido é acrescentado à sequência, e o processo continua para gera
 
 > cada token começa com um vetor aprendido; attention movimenta informação entre posições; blocos sucessivos constroem representações dependentes do contexto; a representação mais recente é usada para escolher o próximo token.
 
-### Uma pequena intuição geométrica
+#### Uma pequena intuição geométrica
 
 Até aqui, usamos **token embedding** para falar do vetor inicial de cada token dentro do LLM. De forma mais geral, um embedding é uma representação vetorial aprendida para alguma coisa: um token, uma comida, uma imagem ou até um texto inteiro.
 
@@ -351,7 +356,7 @@ Os nomes das três posições são apenas uma simplificação para conseguirmos 
 
 Mais adiante, veremos modelos de embedding que produzem um único vetor para representar uma consulta ou um documento inteiro. A mesma intuição geométrica permitirá encontrar textos semanticamente próximos, algo útil em busca e RAG. Por enquanto, basta não confundir esse uso futuro com o **token embedding**, que é o vetor inicial de cada token dentro do LLM.
 
-## Contexto: o que o modelo recebe nesta chamada?
+### Contexto: o que o modelo recebe nesta chamada?
 
 O **contexto** pode incluir instruções, a mensagem do usuário, histórico, documentos e resultados de ferramentas. A aplicação monta o que será enviado.
 
@@ -361,7 +366,7 @@ Podemos pensar nessa janela como um orçamento compartilhado por instruções, m
 
 Tokens também aparecem na medição de uso e, em muitos serviços, no cálculo de cobrança. Mesmo numa atividade com acesso gratuito, o volume de informação e os limites do serviço continuam sendo preocupações práticas.
 
-## Sampling, temperatura e respostas diferentes
+### Sampling, temperatura e respostas diferentes
 
 Depois de calcular probabilidades, ainda precisamos escolher o próximo token. Podemos selecionar o mais provável ou fazer uma amostragem, chamada **sampling**. Na amostragem, a escolha leva em conta as probabilidades e pode variar entre execuções.
 
@@ -377,7 +382,7 @@ temperatura alta   36%     28%       22%        14%
 
 Isso nos leva a uma preocupação de engenharia: precisamos definir o que conta como acerto na tarefa. Uma resposta pode estar errada mesmo quando é sempre repetida.
 
-## Do modelo para uma aplicação
+### Do modelo para uma aplicação
 
 Uma aplicação simples pode ser representada assim:
 
@@ -420,14 +425,8 @@ Depois, vamos trabalhar as limitações que aparecerem:
 
 Ao longo dos módulos, desenvolveremos ferramentas para problemas diferentes e formaremos uma visão inicial dos vários casos de uso :)
 
-## Próximo passo
+### Próximo passo
 
 Com isso, esperamos ter uma visão geral da área: decidir onde um modelo de IA pode ajudar, fornecer contexto, controlar o que pode acontecer e verificar resultados.
 
 Na próxima aula, vamos construir a primeira versão do CLMail e acompanhar o caminho de um e-mail até uma proposta de alteração no banco.
-
-## Explorações
-
-- [AI Engineering, Chip Huyen](https://www.amazon.com.br/AI-Engineering-Building-Applications-Foundation/dp/1098166302)
-- [AI Engineering From Scratch](https://aiengineeringfromscratch.com)
-- [CS50 AI](https://cs50.harvard.edu/ai/)
